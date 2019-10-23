@@ -1,0 +1,103 @@
+# Multi-Processor-Safe-HW_SW_Event_Processing_Driver
+
+This driver using FreeRTOSv10.2.1 to create a WIN32-MSVC applicaton to  create a 
+   - Main driver thread for event processing
+   - Test Thread to  execute a number of Test cases
+   - SW Timer to simulate a HW Timer Interrupt
+   
+For Other RTOS - you need to adpat the inc/extern.h for your RTOS port
+
+--------------------------------------------------------------------------------------------------------------
+            Consol Output -  after executing the driver application RTOSDemo.exe
+--------------------------------------------------------------------------------------------------------------
+            Init Done
+            Call Back CB1 - PASSED: Drv Set Mode : ON
+            Call Back CB2 - Get State : 1
+            Call Back CB1 - PASSED: Drv Set Mode : OFF
+            Call Back CB2 - Get State : 0
+            Call Back CB1 - PASSED: Drv Set Mode : ON
+            Call Back CB2 - Get State : 1
+            Call Back CB3 - PASSED: Scheduler_run 1
+            Call Back CB3 - PASSED: Scheduler_run 2
+            Call Back CB3 - PASSED: Scheduler_run_async 2
+            Call Back - software timer
+            PASSED: Timer Timeout Event Processed : DRV ON
+
+
+            All Test Completed !
+
+
+
+            Call Back - software timer
+            PASSED: Timer Timeout Event Processed : DRV ON
+            Call Back - software timer
+            PASSED: Timer Timeout Event Processed : DRV ON
+
+
+
+-----------------------------------------
+      File structure
+-----------------------------------------
+            RTOSDemo.exe  -  Executable
+            Drv           -  HW driver
+            Isr           -  Interrupt service Routine 
+            Main_         -  main event handling 
+            Pow           -  HW Power related interface file
+            Scheduler     -  Event scheduler interface
+            Thread        -  Thread handling 
+            extern.h      -  This file explains external dependancy of driver that needs to be patch according to RTOS used
+            Internal.h    -  Internal files for driver
+
+
+
+            ├───inc               -   Include files 
+            │
+            ├───obj               -   Object files
+            │
+            └───src               -   Source files 
+                    Drv.c
+                    Isr.c
+                    Main.c
+                    Pow.c
+                    Scheduler.c
+                    Thread.c
+        
+
+---------------------------------------------------------------------------------------------------
+  How to build this driver application using FreeRTOSv10.2.1 on Windows Machine
+---------------------------------------------------------------------------------------------------
+Follow the steps provided in -
+   - Visit this weblink : https://www.freertos.org/simple-freertos-demos.html to get setup ready on your Windows machine 
+   - Go to section "Try It Now, Using the Windows Port"
+   - Follow the Step 1 to 5 mentioned in above link at section "Try It Now, Using the Windows Port"
+   - if All Ok then now intergrate the drive by
+       - Add the driver /src directory files to visual studio project where main_blinky.c is located
+       - Add driver /inc path to include directory in visual studio project property settings
+       - Open main.c of demo project of FreeRTOS and search for main_blinky(), replace it with main_driver()
+       - Press Ctrl+Alt+F7 in MS visual studio to trigger a rebuild of project
+       - Press F5 to run the application
+       - Consol window will pop up which will show you the driver events processing prints as mentioned below:
+
+        
+                Init Done
+                Call Back CB1 - PASSED: Drv Set Mode : ON
+                Call Back CB2 - Get State : 1
+                Call Back CB1 - PASSED: Drv Set Mode : OFF
+                Call Back CB2 - Get State : 0
+                Call Back CB1 - PASSED: Drv Set Mode : ON
+                Call Back CB2 - Get State : 1
+                Call Back CB3 - PASSED: Scheduler_run 1
+                Call Back CB3 - PASSED: Scheduler_run 2
+                Call Back CB3 - PASSED: Scheduler_run_async 2
+                Call Back - software timer
+                PASSED: Timer Timeout Event Processed : DRV ON
+
+
+                All Test Completed !
+
+
+
+                Call Back - software timer
+                PASSED: Timer Timeout Event Processed : DRV ON
+                Call Back - software timer
+                PASSED: Timer Timeout Event Processed : DRV ON
